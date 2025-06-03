@@ -27,6 +27,8 @@ class GradLinReg():
     def __init__(self, lr, s):
         self.lr = lr
         self.s = s
+        self.loss = []
+        self.weights = []
 
     def fit(self, X, y):
         X = X.to_numpy()
@@ -40,6 +42,12 @@ class GradLinReg():
 
         for i in range(self.s):
             self.w = self.w - self.lr * self.calc_grad(X, y)
+
+            self.weights.append(self.w.copy())
+
+            y_pred = X @ self.w
+            los = np.mean((y**2 - y_pred**2)**2)
+            self.loss.append(los)
 
         return self
 
