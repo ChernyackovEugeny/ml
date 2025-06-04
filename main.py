@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 from models.firstman import AnaliticLinReg
 from models.firstman import GradLinReg
+from models.firstman import StoGradLinReg
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
@@ -56,10 +57,36 @@ mse2 = mean_squared_error(y_test, y_pred2)
 
 # -------------------
 
+stogradreg = StoGradLinReg(100, 50, 0.1)
+stogradreg.fit(X_train, y_train)
+y_pred4 = stogradreg.predict(X_test)
+mse4 = mean_squared_error(y_test, y_pred4)
+
+# plt.figure(figsize=(7, 10))
+# plt.plot(stogradreg.batch_loss)
+# plt.xlabel('Итерация')
+# plt.ylabel('MSE (лосс)')
+# plt.title('Изменение ошибки во время обучения')
+# plt.grid()
+# plt.show()
+
+# plt.figure(figsize=(7, 10))
+# weights = np.array(stogradreg.weights)
+# for i in range(stogradreg.D):
+#     plt.plot(weights[:, i], label=f'weight {i}')
+# plt.xlabel('Iteration')
+# plt.ylabel('Weight value')
+# plt.title('Change of weights during gradient descent')
+# plt.legend()
+# plt.grid(True)
+# plt.show()
+
+# -------------------
+
 skreg = LinearRegression()
 skreg.fit(X_train, y_train)
 y_pred3 = skreg.predict(X_test)
 mse3 = mean_squared_error(y_test, y_pred3)
 
-print(round(mse1, 2), round(mse2, 2), round(mse3, 2))
+print(round(mse1, 2), round(mse2, 2), round(mse3, 2), round(mse4, 2))
 print(skreg.score(X_test, y_test))
