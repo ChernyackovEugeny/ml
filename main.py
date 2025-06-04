@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from models.firstman import AnaliticLinReg
 from models.firstman import GradLinReg
 from models.firstman import StoGradLinReg
+from models.firstman import L1GradLinReg
+from models.firstman import L2GradLinReg
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
@@ -83,10 +85,22 @@ mse4 = mean_squared_error(y_test, y_pred4)
 
 # -------------------
 
+l1gradreg = L1GradLinReg(0.1, 0.1, 100)
+l1gradreg.fit(X_train, y_train)
+y_pred5 = l1gradreg.predict(X_test)
+mse5 = mean_squared_error(y_test, y_pred5)
+
+# -------------------
+
+l2gradreg = L2GradLinReg(0.1, 0.1, 100)
+l2gradreg.fit(X_train, y_train)
+y_pred6 = l2gradreg.predict(X_test)
+mse6 = mean_squared_error(y_test, y_pred6)
+
+# -------------------
 skreg = LinearRegression()
 skreg.fit(X_train, y_train)
 y_pred3 = skreg.predict(X_test)
 mse3 = mean_squared_error(y_test, y_pred3)
 
-print(round(mse1, 2), round(mse2, 2), round(mse3, 2), round(mse4, 2))
-print(skreg.score(X_test, y_test))
+print(round(mse1, 2), round(mse2, 2), round(mse3, 2), round(mse4, 2), round(mse5, 2), round(mse6, 2))
