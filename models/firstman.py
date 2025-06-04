@@ -199,3 +199,5 @@ class L2GradLinReg():
         return grad
 
 # cross-val; data
+# реализация lasso, ridge в sklearn
+# новые данные для классификации
