@@ -6,6 +6,8 @@ class LinClass():
         self.l2 = l2
         self.lr = lr
         self.s = s
+        self.weights = []
+        self.loss = []
 
     def fit(self, X, y):
         X = np.asarray(X)
@@ -19,6 +21,11 @@ class LinClass():
 
         for i in range(self.s):
             self.w = self.w - self.lr * self.calc_grad(X, y)
+            self.weights.append(self.w.copy())
+
+            l2_coef = self.l2 * np.sum(self.w[1:] ** 2)
+            los = np.sum(np.maximum(0, 1 - y * X.dot(self.w))) + l2_coef
+            self.loss.append(los)
 
         return self
 

@@ -1,9 +1,8 @@
 import pandas as pd
 import numpy as np
 
-w = np.random.normal(size=(3, 2))
-mik = w + 0.5
-mask = mik > 0.5
+x = np.random.normal(size=(3, 2))
+y = np.random.normal(size=(3,))
+w = np.random.normal(size=(2,))
 
-print(w)
-print(w[mask])
+print(y*x.dot(w))
