@@ -44,3 +44,53 @@ class LinClass():
         # y[mask, None] все метки по той же маске, None вторым аргументам добавляет размерность для поточечного умножения
         grad = -1 * np.sum((y[mask, None] * X[mask]), axis=0) + l2_coef
         return grad
+
+
+# многоклассовая классификация, k классов
+
+class LogRegOVA():  # one versus all
+    def __init__(self, k, l2, lr, s):
+        self.k = k
+        self.l2 = l2
+        self.lr = lr
+        self.s = s
+
+    def fit(self, X, y):
+        # метки на входе от 1 до k
+        # создать k выборок, научить k штук LinClass по соответ выборкам
+        # метки 1 и -1, в k-той выборке k-тый класс - единица, остальные -1
+
+        answers = []
+        for i in range(1, self.k+1):
+            y_k = np.where(y == i, 1, -1)
+            answers.append(y_k)
+        # k выборок готовы
+
+        self.models = []
+        for i in range(0, self.k):
+            model_k = LinClass(self.l2, self.lr, self.s)
+            model_k.fit(X, answers[i])
+            self.models.append(model_k)
+        # k обученных моделей готовы, выдают знак, хотим margin, придется вытаскивать self.w
+        # отличают k-тый класс от остальных, остальное на predict
+
+    def predict(self, X):
+        X = np.asarray(X)
+        ones_col = np.ones((X.shape[0], 1))
+        X = np.hstack((ones_col, X))
+
+        # хотим получать класс с самым уверенным ответом - наибольшее значение в models_pred
+        models_pred = []
+        for i in range(self.k):
+            models_pred.append(X @ self.models[i].w)
+        models_pred = np.array(models_pred)  # из одномерного списка списков делаем двумерный массив - shape: (k, n_samples)
+
+        return np.argmax(models_pred, axis=0) + 1  # выдаст индекс, но метки от 1 до k
+
+
+
+
+
+
+
+

@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 
-x = np.random.normal(size=(3, 2))
-y = np.random.normal(size=(3,))
-w = np.random.normal(size=(2,))
-
-print(y*x.dot(w))
+y = []
+for i in range(1, 11):
+    x = [0 for j in range(i)]
+    y.append(x)
+print(y)
