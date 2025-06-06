@@ -1,5 +1,6 @@
 # hinge, support vector machine(SVM)
 import numpy as np
+from collections import Counter
 
 class LinClass():
     def __init__(self, l2, lr, s):
@@ -48,7 +49,7 @@ class LinClass():
 
 # многоклассовая классификация, k классов
 
-class LogRegOVA():  # one versus all
+class LinClassOVA():  # one versus all
     def __init__(self, k, l2, lr, s):
         self.k = k
         self.l2 = l2
@@ -86,6 +87,57 @@ class LogRegOVA():  # one versus all
         models_pred = np.array(models_pred)  # из одномерного списка списков делаем двумерный массив - shape: (k, n_samples)
 
         return np.argmax(models_pred, axis=0) + 1  # выдаст индекс, но метки от 1 до k
+
+class LinClassAVA():  # all versus all
+    def __init__(self, k, l2, lr, s):
+        self.k = k
+        self.l2 = l2
+        self.lr = lr
+        self.s = s
+
+    def fit(self, X, y):
+        samples = [[0 for j in range(self.k)] for i in range(self.k)]
+        for i in range(1, self.k+1):
+            for j in range(i+1, self.k+1):
+                mask = (y == i) | (y == j) #  | - побитовый or
+                X_ij = X[mask]
+                y_ij = y[mask]
+                y_ij = np.where(y_ij == i, 1, -1)
+                samples[i-1][j-1] = (X_ij, y_ij)
+
+
+        self.models = [[0 for j in range(self.k)] for i in range(self.k)]
+        for i in range(1, self.k+1):
+            for j in range(i+1, self.k+1):
+                model_ij = LinClass(self.l2, self.lr, self.s)
+                model_ij.fit(samples[i-1][j-1][0], samples[i-1][j-1][1])
+                self.models[i-1][j-1] = model_ij
+
+        # двумерный список, С из 2 по k моделей, остальные нули
+
+    def predict(self, X):
+        voting = []
+        for i in range(1, self.k+1):
+            for j in range(i+1, self.k+1):
+                ans = self.models[i-1][j-1].predict(X)
+                ans = np.where(ans == 1, i, j)  # обновляем метки классов на настоящие
+                voting.append(ans)
+
+        # получили С из 2 по k ответов моделей, посчитаем, выберем класс с наибольшим кол-вом голосов
+        voting = np.array(voting)  # (n_models, n_samples)
+        voting = voting.T  # (n_samples, n_models)
+
+        final_preds = []
+        for row in voting:
+            pred = Counter(row).most_common(1)[0][0]
+            # Counter(row).most_common(1) вренет список [(значение, сколько раз встретилось)] самого частого класса
+            final_preds.append(pred)
+
+        return np.array(final_preds)
+
+
+
+
 
 
 
