@@ -43,3 +43,43 @@ class LogReg():
         sig = self.sigmoid(X.dot(self.w))
         grad = (1/self.N) * X.T @ (sig - y)
         return grad
+
+class LogRegOVA():
+    def __init__(self, k, t, lr, s):
+        self.k = k  # кол-во классов
+        self.t = t  # порог для вероятностей
+        self.lr = lr
+        self.s = s
+
+    def fit(self, X, y):
+        # хотим k моделей, которые отличают i-тый класс от всех остальных
+        # создаем соответствующие выборки, сразу обучаем на них модели, классы от 1 до k
+
+        self.models = []
+        for i in range(1, self.k+1):
+            y_k = np.where(y == i, 1, 0)
+            model_k = LogReg(self.t, self.lr, self.s)
+            model_k.fit(X, y_k)
+            self.models.append(model_k)
+
+        return self
+
+    def predict(self, X):
+        # для каждого объекта хотим вектор вероятностей, находится в model.probabilities
+        probs = []
+        for i in range(self.k):
+            pred_k = self.models[i].predict(X)
+            prob_k = self.models[i].probability  # с каждой модели по вектору вероятностей принадлежности объекта к конкретному классу
+            probs.append(prob_k)
+
+        probs = np.array(probs).T  # (k_models, n_samples)
+        # в i-той строке вероятности для i-того объекта
+
+        self.probabilities = probs
+
+        exp_probs = np.exp(probs)
+        softmax_probs = exp_probs / np.sum(exp_probs, axis=1, keepdims=True)
+        # keepdims=True -> размерность (n, 1), а не (n, 0) для broadcasting при делении
+
+        pred = np.argmax(softmax_probs, axis=1) + 1
+        return pred
