@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from collections import Counter
 
-answers = [[0 for j in range(3)] for i in range(3)]
-print(answers)
+ans = [1, 2, 3, 2, 2, 4, 4]
+indexes = [0, 1, 3]
+print(ans[ind])
