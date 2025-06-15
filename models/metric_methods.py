@@ -105,3 +105,4 @@ class KernelReg():
     # гауссово ядро, важно в регрессии
     def kernel_func(self, x):
         return 1/np.sqrt(2*np.pi) * np.exp(-0.5 * x**2)
+
