@@ -1,4 +1,5 @@
 from models.wooden_guys import DecisionTree
+from models.wooden_guys import RandomForest
 
 import pandas as pd
 
@@ -17,8 +18,23 @@ tree.fit(X_train, y_train)
 y_pred1 = tree.predict(X_test)
 accuracy1 = accuracy_score(y_test, y_pred1)
 
-dot = tree.export_graphviz()
-dot.render("tree", format="png", cleanup=True)  # создаст файл tree.png
-dot.view()  # откроет в окне просмотра, если поддерживается
-print(accuracy1)
+forest = RandomForest(3)
+forest.fit(X_train, y_train)
+y_pred2 = forest.predict(X_test)
+accuracy2 = accuracy_score(y_test, y_pred2)
+
+# dot = tree.export_graphviz()
+# dot.render("tree", format="png", cleanup=True)  # создаст файл tree.png
+# dot.view()  # откроет в окне просмотра, если поддерживается
+
+# for i in range(forest.trees):
+#     dot = forest.export_tree(tree_index=i)
+#     dot.render(f"tree{i}", format="png", cleanup=False)  # сохранит как tree0.png
+#     dot.view()
+
+# dot = forest.export_tree(tree_index=0)
+# dot.render("tree0", format="png", cleanup=False)
+# dot.view()
+
+print(accuracy1, accuracy2)
 

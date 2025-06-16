@@ -1,19 +1,8 @@
 import pandas as pd
 import numpy as np
+import random
 from collections import Counter
-
-import os
-from graphviz import Digraph
-
-# Укажи путь до bin, если не в PATH
-os.environ["PATH"] += os.pathsep + r"C:\Graphviz\bin"
-
-# Создаём граф
-dot = Digraph()
-dot.node('A', 'Начало')
-dot.node('B', 'Конец')
-dot.edge('A', 'B', label='Переход')
-
-# Сохраняем и открываем
-dot.render('test_graph', format='png', view=True)
+d=16
+a = random.sample(range(1, d+1), round(np.sqrt(d)))
+print(a)
 
