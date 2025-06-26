@@ -4,14 +4,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 data = pd.read_csv('../data/raw/house_prices/train.csv', index_col='Id')
-target = pd.read_csv('../data/raw/house_prices/sample_submission.csv', index_col='Id')
-
-
+target = data['SalePrice']
+data = data.drop(columns=['SalePrice'])
 
 # figure = plt.figure(figsize=(15, 20))
 # plt.barh(data.isna().sum(axis=0).index, data.isna().sum(axis=0).values)
 # plt.show()
-
 
 # распределение таргета
 # print(target.describe())
@@ -24,8 +22,10 @@ target = pd.read_csv('../data/raw/house_prices/sample_submission.csv', index_col
 # data_num = data.select_dtypes(include=['float64', 'int64'])
 # data_num.hist(figsize=(16, 20), bins=50, xlabelsize=8, ylabelsize=8)
 # plt.show()
-print(type(data['MSZoning'].values))
-print(list(set(data.dtypes.tolist())))
-data_num = data.select_dtypes(include=['object', 'category'])
-data_num_features = data_num.columns.tolist()
-print(data_num_features)
+
+def num_cols(data):
+    data_num = data.select_dtypes(include=['number'])
+    data_num_features = data_num.columns.tolist()
+    return data_num_features
+
+
