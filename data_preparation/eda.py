@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.preprocessing import StandardScaler
 
 # распределение таргета + describe + skewness, kurtosis
 def target_info(target, width=7, height=10):
@@ -34,6 +35,20 @@ def numfeature_target_relate(data, feature, target, width=7, height=10, ylimit=(
     )
     plt.show()
 
+def scatter_plot(data, feature, target):
+    y_col = target.name if target.name is not None else 'target'  # если у таргета нет имени
+    target = target.copy()
+    target.name = y_col
+
+    data_feature = pd.concat([
+        target.reset_index(drop=True),
+        data[feature].reset_index(drop=True)
+    ], axis=1)
+
+    sns.set()
+    sns.pairplot(data_feature, height=2.5)
+    plt.show()
+
 # categorical variables
 def catfeature_target_boxplot(data, feature, target, width=16, height=8, ymin=0, ymax=800000):
     y_col = target.name if target.name is not None else 'target'
@@ -50,6 +65,7 @@ def catfeature_target_boxplot(data, feature, target, width=16, height=8, ymin=0,
     fig.axis(ymin=ymin, ymax=ymax)
     plt.xticks(rotation=90)
     plt.show()
+
 
 # correlation matrix - heatmap style
 def corrmat(data, target, width=12, height=9):
@@ -83,6 +99,20 @@ def most_corr_heatmap(data, target, width=12, height=9, k=10):
     plt.title(f'Top {k} correlated features with {y_col}')
     plt.show()
 
+
+# find outliers
+def target_outliers(target, n=10):
+    scaler = StandardScaler()
+    scaled_target = scaler.fit_transform(target.values.reshape(-1, 1)).flatten()
+
+    low_idx = scaled_target.argsort()[:n]
+    high_idx = scaled_target.argsort()[-n:]
+
+    print('outer range (low) of the distribution:')
+    print(scaled_target[low_idx])
+
+    print('\nouter range (high) of the distribution:')
+    print(scaled_target[high_idx])
 
 
 
