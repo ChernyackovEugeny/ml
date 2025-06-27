@@ -3,20 +3,22 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
+from scipy import stats
+from scipy.stats import norm
 
 # распределение таргета + describe + skewness, kurtosis
 def target_info(target, width=7, height=10):
     print(target.describe())
     print('-----------------------')
     print(f'Skewness: {target.skew():.3f}')
-    print(f'Skewness: {target.kurt():.3f}')
+    print(f'Kurtosis: {target.kurt():.3f}')
 
     plt.figure(figsize=(width, height))
     sns.histplot(target, color='g', bins=100, kde=True, alpha=0.4)
     plt.show()
 
 # numerical variables
-def numfeature_target_relate(data, feature, target, width=7, height=10, ylimit=(0,800000)):
+def numfeature_target_relate(data, feature, target, width=None, height=None, ylim=None):
     y_col = target.name if target.name is not None else 'target'  # если у таргета нет имени
     target = target.copy()
     target.name = y_col
@@ -26,11 +28,12 @@ def numfeature_target_relate(data, feature, target, width=7, height=10, ylimit=(
         data[feature].reset_index(drop=True)
     ], axis=1)
 
+    fig = None if (width, height) == (None, None) else (width, height)
     data_feature.plot.scatter(
         x=feature,
         y=y_col,
-        figsize=(width, height),
-        ylim=ylimit,
+        figsize=fig,
+        ylim=ylim,
         title=f'{feature} vs {y_col}'
     )
     plt.show()
@@ -113,6 +116,36 @@ def target_outliers(target, n=10):
 
     print('\nouter range (high) of the distribution:')
     print(scaled_target[high_idx])
+
+
+# statistical assumptions for multivariate techniques
+# normality
+def target_norm(target, width=7, height=10):
+    # Histogram with normal distribution fit
+    sns.histplot(target, kde=True, stat="density")
+    xmin, xmax = plt.xlim()
+    x = np.linspace(xmin, xmax, 100)
+    p = norm.pdf(x, target.mean(), target.std())
+    plt.plot(x, p, 'k', linewidth=2)
+    plt.title('Histogram of SalePrice with Normal PDF')
+    plt.show()
+
+    # Q-Q plot (normal probability plot)
+    fig = plt.figure()
+    res = stats.probplot(target, dist="norm", plot=plt)
+    plt.title('Normal Q-Q Plot')
+    plt.show()
+
+# homoscedasticity(гомоскедантичность)
+# Departures from an equal dispersion are shown by such shapes as cones (small dispersion at one side of the graph,
+# large dispersion at the opposite side) or diamonds (a large number of points at the center of the distribution).
+# scatter plots
+
+
+
+
+
+
 
 
 
