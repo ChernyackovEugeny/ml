@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import random
 from collections import Counter
-d=16
-a = random.sample(range(1, d+1), round(np.sqrt(d)))
-print(a)
+
+a = np.array([1, 2, 3])
+print(np.argmax(a))
 
