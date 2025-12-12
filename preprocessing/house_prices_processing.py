@@ -23,14 +23,14 @@ target = dataset['SalePrice']
 data = dataset.drop(columns=['SalePrice'])
 
 # NaNs
-data, target = do_nan_void(dataset, ['Electrical'], target)
+data, target = do_nan_void(data, ['Electrical'], target)
 features, nans_amount = nan_cols(data)
 data = data.drop(columns=features)
 
 # outliers
 # print(data.sort_values(by='GrLivArea', ascending=False)[:2])
 data = data.drop([524, 1299])
-target = target.drop([523, 1298])
+target = target.drop([524, 1299])
 
 data['HasBsmt'] = data['TotalBsmtSF'].apply(lambda x: 1 if x > 0 else 0)
 data['TotalBsmtSF'] = data['TotalBsmtSF'].apply(lambda x: np.log(x) if x > 0 else 0)
@@ -41,8 +41,8 @@ data['GrLivArea'] = np.log(data['GrLivArea'])
 cat_col = cat_cols(data)
 data = label_encode(data, cat_col)
 
-# dataset = pd.concat([data, target])
-# dataset.to_csv('../data/processed/House_Prices/prices_mark1.csv', index=False)
+dataset = pd.concat([data, target], axis=1)
+dataset.to_csv('../data/processed/House_Prices/prices_mark1.csv', index=False)
 
 
 

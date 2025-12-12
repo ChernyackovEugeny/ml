@@ -12,7 +12,7 @@ class AnaliticLinReg():
         X = np.hstack((ones_col, X))
         y = y.to_numpy().reshape(-1)
 
-        self.w = np.linalg.inv(X.T @ X) @ (X.T @ y)
+        self.w = np.linalg.pinv(X.T @ X) @ (X.T @ y)
         return self
 
     def predict(self, X):

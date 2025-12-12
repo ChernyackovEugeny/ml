@@ -41,16 +41,16 @@ def do_nan_fill(data, features, method='mean'):
     return data
 
 
-def do_nan_void(dataset, features, target):
-    dataset = dataset.copy()
+def do_nan_void(data, features, target):
+    data = data.copy()
     target = target.copy()
 
     y_col = target.name if target.name is not None else 'target'
     target.name = y_col
 
-    dataset[y_col] = target
-    dataset = dataset.dropna(subset=features)
+    data[y_col] = target
+    data = data.dropna(subset=features)
 
-    return dataset.drop(columns=[y_col]), dataset[y_col]
+    return data.drop(columns=[y_col]), data[y_col]
 
 
